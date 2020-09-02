@@ -1,10 +1,86 @@
 \documentclass[12pt]{article}
 \usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
-\usepackage{lipsum}
+\usepackage{hyperref}
+\usepackage{tikzsymbols}
+\usepackage{xcolor}
+\definecolor{LightGray}{rgb}{.90, .90, .90}
+\usepackage{minted}
 \title{Not So Long Introduction to Pydantic}
 \author{Umesh Timalsina}
 \begin{document}
     \maketitle
-    \section{Not So Long Introduction To Pydantic}
-    \lipsum{2}
+    \section*{Prologue}
+
+        Due to untyped nature of python, validation of datatypes used in your classes can be quite tricky. Unless used judiciously, this can lead to downstream issues related to use of invalid datatypes in your python package.
+
+        In this post, we explore data validation for python classes using Pydantic\footnote{\url{https://pydantic-
+        docs.helpmanual.io}}
+
+    \section*{Introduction}
+    At its core, pydantic is a data validation and a settings management library. In this post we will focus more on data validation part. Let's start with a basic example. While the documentation is holistic, this blog post can serve as a quick start guide, an extended overview if you insist \dSmiley.
+
+The code examples presented in this blog post are available in the following GitHub repository.\footnote{\url{https://github.com/umesh-timalsina/not-so-long-intro-to-pydantic}}
+
+Let's create a simple account management problem. We will start with a simple situation with two types of accounts.
+    
+    \begin{enumerate}
+        \item \texttt{SavingsAccount}
+        \item \texttt{CheckingAccount}
+    \end{enumerate}
+
+    Clearly, many aspects of these accounts can be consolidated using an abstract base class Account. Using pydantic, we can define the base class as:
+
+    \begin{minted}[
+        frame=lines,
+        framesep=2mm,
+        baselinestretch=1.2,
+        bgcolor=LightGray,
+        fontsize=\footnotesize,
+        linenos
+    ]{python}
+
+
+from abc import ABC, abstractmethod
+from pydantic import BaseModel, Field
+
+
+class Account(BaseModel, ABC):
+    id: str = Field(
+        ...,
+        description="The id of the account"
+    )
+
+    account_holder: str = Field(
+        ...,
+        description="The name of the account holder"
+    )
+
+    amount: float = Field(
+        ...,
+        description="The amount in the account in dollars"
+    )
+
+    is_open: bool = Field(
+        default=True,
+        description="A flag indicating whether or not the account is open"
+    )
+
+    @abstractmethod
+    def deposit(self, amount):
+        raise NotImplementedError
+
+    @abstractmethod
+    def close(self):
+        raise NotImplementedError
+
+    def withdraw(self, amount):
+        if self.amount <= amount:
+            self.amount -= amount
+        else:
+            raise ValueError('Cannot withdraw more than available funds.')
+
+    def __repr__(self):
+        return f'<{self.__class__.__name__} {self.id}>'
+    \end{minted}
+
 \end{document}
