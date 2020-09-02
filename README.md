@@ -1,5 +1,5 @@
 # A not so long introduction to pydantic
-This repository contains examples related to the following [blog post](https://umesh-timalsina.github.io/A-Not-So-Long-Introduction-to-Pydantic).
+This repository contains examples related to the following [blog post](https://umesh-timalsina.github.io/not-so-long-intro-to-pydantic/).
 
 ## Usage
 Install requirements using `pip` and run `doctest`.
