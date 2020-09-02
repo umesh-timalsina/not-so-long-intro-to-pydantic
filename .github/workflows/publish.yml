@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - master
-      - 3-post-tex
 
 jobs:
   deploy:
