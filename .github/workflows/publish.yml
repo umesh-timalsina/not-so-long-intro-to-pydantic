@@ -17,6 +17,7 @@ jobs:
             post.tex
           working_directory: post
           extra_system_packages: "py-pygments"
+          latexmk_shell_escape: true
 
       - name: Install PDF to html
         run: |
